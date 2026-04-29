@@ -1,0 +1,42 @@
+// GameSystem-------------------------------------------------------------------------
+table GameManger
+{
+  GameTime float
+}
+
+table Sunsystem
+{
+  _GameManger GameManger
+  SunRotageSpeed float
+  sunAngleX float
+}
+//----------------------------------------------------------------------------------------------
+
+// Character---------------------------------------------------------------------------
+Table characterMoveMent {
+   _characterCameraSystem CharacterCameraSystem
+   character_Speed float
+   character_RunSpeed float
+   character_RotateSpeed float
+   character_Jumpforce float
+   isMove bool
+   isRun bool
+   isJump bool
+   isGound bool
+}
+
+Table CharacterCameraSystem {
+   
+   MainCamera camera
+   TargetCharacter Transform
+   dierection float
+   caeraRotateSpeed float
+   minDierection float
+   maxDierection float
+   zoomSpeed float
+   minYAngle float
+   maxYAngle float
+   xRotation float
+   yRotation float
+}
+//----------------------------------------------------------------------------------------------
