@@ -20,8 +20,9 @@ public class SunSystem : MonoBehaviour
 
     private void SunRotate()
     {
-        transform.Rotate(Vector3.right * SunRotageSpeed * Time.deltaTime);
-        sunAngleX = transform.eulerAngles.x;
+        sunAngleX += SunRotageSpeed * Time.deltaTime;
+        sunAngleX = Mathf.Repeat(sunAngleX, 360f);
+        transform.rotation = Quaternion.Euler(sunAngleX, 0f, 0f);
     }
 
     private void ConvertAngleToTime()
@@ -29,8 +30,7 @@ public class SunSystem : MonoBehaviour
         float time = (sunAngleX / 360f) * 24f;
 
         time += 6f;
-
-        if (time >= 24f) time -= 24f;
+        time = Mathf.Repeat(time, 24f);
         _gameManager.currentGameTime = time;
 
     }

@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class CharacterMoveMentSystem : MonoBehaviour
@@ -13,6 +14,8 @@ public class CharacterMoveMentSystem : MonoBehaviour
     public bool isGound;
 
     public Rigidbody rb;
+    public Animator characterAnimator;
+
     public CharacterCameraSystem _characterCameraSystem;
     // public GameManager gameManger;
    
@@ -36,10 +39,10 @@ public class CharacterMoveMentSystem : MonoBehaviour
 
     private void Move()
     {
-        float h = Input.GetAxisRaw("Horizontal");
-        float v = Input.GetAxisRaw("Vertical");
+        float Horizontal = Input.GetAxisRaw("Horizontal");
+        float Vertical = Input.GetAxisRaw("Vertical");
 
-        Vector3 inputDir = new Vector3(h, 0f, v).normalized;
+        Vector3 inputDir = new Vector3(Horizontal, 0f, Vertical).normalized;
 
         isMove = inputDir.magnitude > 0f;
         isRun = Input.GetKey(KeyCode.LeftShift) && isMove;
@@ -55,22 +58,44 @@ public class CharacterMoveMentSystem : MonoBehaviour
         cameraForward.Normalize();
         cameraRight.Normalize();
 
-        Vector3 moveDir = cameraForward * v + cameraRight * h;
-        moveDir.Normalize();
+        Vector3 Derection = cameraForward * Vertical + cameraRight * Horizontal;
+        Derection.Normalize();
 
         float currentSpeed = isRun ? character_RunSpeed : character_Speed;
 
-        Vector3 moveVelocity = moveDir * currentSpeed;
+        Vector3 moveVelocity = Derection * currentSpeed;
         moveVelocity.y = rb.linearVelocity.y;
 
         rb.linearVelocity = moveVelocity;
 
-        Quaternion targetRotation = Quaternion.LookRotation(moveDir);
-        transform.rotation = Quaternion.Slerp(
-            transform.rotation,
-            targetRotation,
-            character_RotateSpeed * Time.deltaTime
-        );
+        if(Derection != Vector3.zero)
+        {
+            if (isRun)
+            {
+                //characterAnimator.SetBool("Run", true);
+                Debug.Log("달리기 애니매이션 실행");
+            }
+            else
+            {
+                //characterAnimator.SetBool("IsMove", true);
+                Debug.Log("걷기 애니매이션 실행");
+            }
+           
+
+            Quaternion targetRotation = Quaternion.LookRotation(Derection);
+            transform.rotation = Quaternion.Slerp(
+                transform.rotation,
+                targetRotation,
+                character_RotateSpeed * Time.deltaTime
+            );
+        }
+        else
+        {
+            //characterAnimator.SetBool("Run", false);
+            //characterAnimator.SetBool("IsMove", false);
+        }
+
+       
     }
 
     private void Jump()
@@ -79,17 +104,17 @@ public class CharacterMoveMentSystem : MonoBehaviour
         {
             isJump = true;
             isGound = false;
-
             rb.AddForce(Vector3.up * character_Jumpforce, ForceMode.Impulse);
+            JumpTime();
         }
     }
 
-    private void OnCollisionEnter(Collision collision)
+    IEnumerator JumpTime()
     {
-        if (collision.collider.CompareTag("Ground"))
-        {
-            isGound = true;
-            isJump = false;
-        }
+        //characterAnimator.SetBool("Jump", true);
+        Debug.Log("점프 실행");
+        yield return new WaitForSeconds(1f);
+        //characterAnimator.SetBool("Jump", false);
+        Debug.Log("점프 종료");
     }
 }
