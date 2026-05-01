@@ -8,6 +8,8 @@ TagManager:
   - bench
   - Bad
   - Fire
+  - CinemachineTarget
+  - SafeZone
   layers:
   - Default
   - TransparentFX
